@@ -4,7 +4,7 @@
   become: yes
 
   roles:
-#    - gitlab-runner
-    - useradd
-#    - docker
-#    - zabbix
+    - gitlab-runner
+#   - useradd
+#   - docker
+#   - zabbix
