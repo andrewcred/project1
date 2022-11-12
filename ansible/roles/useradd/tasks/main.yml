@@ -1,2 +1,12 @@
 ---
 # tasks file for useradd
+- name: Создание пользователя deployer
+  ansible.builtin.user:
+    name: deployer
+    comment: Deployer
+    shell: /bin/bash
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+    home: /home/deployer
+    create_home: true
