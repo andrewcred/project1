@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    container_name: adminer
+    environment:
+      ADMINER_DEFAULT_DB_HOST: postgres
+      ADMINER_DEFAULT_DB_DRIVER: psql
+    depends_on:
+      - postgres
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    container_name: nginx
+    volumes:
+      - nginx-data:/var/lib/nginx/data
+      - ./config/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always  
+
+
+
+volumes:
+  postgres-data:
+    driver: local
+  nginx-data:
+    driver: local
+    
+networks:
+  default:
+    external: true
+    name: main
+
