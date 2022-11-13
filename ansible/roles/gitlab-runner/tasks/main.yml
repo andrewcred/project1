@@ -1,24 +1,19 @@
-#- name: Добавление Gitlab-runner GPG key
-#  apt_key:
-#        url: https://packages.gitlab.com/runner/gitlab-runner/gpgkey
-#        state: present
+---
+- name: Закачка скрипта репозитория Gitlab-runner
+  get_url:
+    url: "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh"
+    dest: /tmp/gitlab-runner.script.deb.sh
+    mode: 0744
+  
+- name: Добавление репозитория Gitlab-runner
+  command: bash /tmp/gitlab-runner.script.deb.sh
+  args:
+    creates: "/etc/apt/sources.list.d/runner_gitlab-runner.list"
+  become: true
 
-#- name: Установка стабильного репозитория
-#  apt_repository:
-#    repo: >
-#        deb [arch=amd64 signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.gpg]
-#        https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main
-#    state: present
-#    update-cache: true
-#    filename: runner_gitlab-runner
-#
-# Почему то не взлетело с ошибкой: "Failed to update apt cache: W:GPG error: https://packages.gitlab.com/runner/gitlab-runner/ubuntu focal InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 3F01618A51312F3F, E:The repository 'https://packages.gitlab.com/runner/gitlab-runner/ubuntu focal InRelease' is not signed."}
-# Поэтому пришлось "колхозить то что вы видите ниже"
-
-#  command: curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | sudo bash
-
-- name: Установка gitlab-runner
+- name: Установка GitLab-runner
   apt:
     name: gitlab-runner
-    update-cache: true
     state: present
+    update-cache: yes
+  become: true
